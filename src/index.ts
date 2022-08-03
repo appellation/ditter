@@ -99,9 +99,12 @@ async function follow(user: APIUser, data: APIUserApplicationCommandInteractionD
 
 	followers.put(targetId, JSON.stringify(Array.from(existing.values())));
 
+	const hasWebhook = await webhooks.get(followerId) !== null;
+	const content = hasWebhook ? `Followed <@${targetId}>!` : `Followed <@${targetId}>!\n\nYou need to use </setwebhook:1004254958360744017> to see this user's deets.`;
+
 	return {
 		type: InteractionResponseType.ChannelMessageWithSource,
-		data: { content: `followed <@${targetId}>!`, flags: MessageFlags.Ephemeral },
+		data: { content, flags: MessageFlags.Ephemeral },
 	};
 }
 
