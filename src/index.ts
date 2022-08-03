@@ -126,8 +126,26 @@ async function handleChatInput(user: APIUser, data: APIChatInputApplicationComma
 			return sendDeet(user, data);
 		case 'setwebhook':
 			return setWebhook(user, data);
+		case 'followers':
+			return getFollowers(user, data);
 		default:
 			throw new Error(`invalid chat input option "${data.name}"`)
+	}
+}
+
+async function getFollowers(user: APIUser, data: APIChatInputApplicationCommandInteractionData): Promise<APIInteractionResponse> {
+	const f = await followers.get<string[]>(user.id, 'json') ?? [];
+
+	let content: string;
+	if (f.length < 10) {
+		content = f.map(id => `<@${id}>`).join(', ');
+	} else {
+		content = `You have ${f.length} followers.`
+	}
+
+	return {
+		type: InteractionResponseType.ChannelMessageWithSource,
+		data: { content, allowed_mentions: { parse: [] } },
 	}
 }
 
