@@ -9,6 +9,7 @@ import {
 	ApplicationCommandType,
 	InteractionResponseType,
 	InteractionType,
+	MessageFlags,
 	RESTPostAPIWebhookWithTokenJSONBody,
 } from 'discord-api-types/v10';
 import { verifyKey } from 'discord-interactions';
@@ -70,12 +71,23 @@ async function handleApplicationCommand(message: APIApplicationCommandInteractio
 
 	switch (message.data.type) {
 		case ApplicationCommandType.User:
-			return follow(user, message.data);
+			return handleUserCommand(user, message.data);
 		case ApplicationCommandType.ChatInput:
 			return handleChatInput(user, message.data);
 	}
 
 	throw new Error(`invalid interaction type "${message.data.type}"`)
+}
+
+async function handleUserCommand(user: APIUser, data: APIUserApplicationCommandInteractionData): Promise<APIInteractionResponse> {
+	switch (data.name) {
+		case 'Follow':
+			return follow(user, data);
+		case 'Unfollow':
+			return unfollow(user, data);
+		default:
+			throw new Error(`invalid user command "${data.name}"`);
+	}
 }
 
 async function follow(user: APIUser, data: APIUserApplicationCommandInteractionData): Promise<APIInteractionResponse> {
@@ -89,7 +101,22 @@ async function follow(user: APIUser, data: APIUserApplicationCommandInteractionD
 
 	return {
 		type: InteractionResponseType.ChannelMessageWithSource,
-		data: { content: 'followed!' },
+		data: { content: `followed <@${targetId}>!`, flags: MessageFlags.Ephemeral },
+	};
+}
+
+async function unfollow(user: APIUser, data: APIUserApplicationCommandInteractionData): Promise<APIInteractionResponse> {
+	const followerId = user.id;
+	const targetId = data.target_id;
+
+	const existing = new Set(await followers.get<string[]>(targetId, 'json') ?? []);
+	existing.delete(followerId);
+
+	followers.put(targetId, JSON.stringify(Array.from(existing.values())));
+
+	return {
+		type: InteractionResponseType.ChannelMessageWithSource,
+		data: { content: `unfollowed <@${targetId}>!`, flags: MessageFlags.Ephemeral },
 	};
 }
 
@@ -110,7 +137,7 @@ async function setWebhook(user: APIUser, data: APIChatInputApplicationCommandInt
 
 	return {
 		type: InteractionResponseType.ChannelMessageWithSource,
-		data: { content: 'webhook set' },
+		data: { content: 'webhook set', flags: MessageFlags.Ephemeral },
 	};
 }
 
@@ -148,6 +175,6 @@ async function sendDeet(user: APIUser, data: APIChatInputApplicationCommandInter
 
 	return {
 		type: InteractionResponseType.ChannelMessageWithSource,
-		data: { content: 'deet sent' },
+		data: { content: 'deet sent', flags: MessageFlags.Ephemeral },
 	};
 }
