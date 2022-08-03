@@ -169,7 +169,10 @@ async function sendDeet(user: APIUser, data: APIChatInputApplicationCommandInter
 				},
 			});
 
-			if (!res.ok) throw new Error(`response not OK: ${await res.text()}`);
+			if (!res.ok) {
+				if (res.status === 404) await webhooks.delete(follower);
+				throw new Error(`response not OK: ${await res.text()}`);
+			}
 		} catch (e) {
 			console.warn(e);
 		}
