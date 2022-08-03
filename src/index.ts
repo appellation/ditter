@@ -152,7 +152,7 @@ async function sendDeet(user: APIUser, data: APIChatInputApplicationCommandInter
 		const avatar = user.avatar ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png` : undefined;
 
 		const body: RESTPostAPIWebhookWithTokenJSONBody = {
-			username: user.username,
+			username: `${user.username}#${user.discriminator}`,
 			avatar_url: avatar,
 			content: content.value,
 			allowed_mentions: { parse: [] },
