@@ -1,0 +1,20 @@
+{
+  "name": "ditter",
+  "version": "0.1.0",
+  "description": "Twitter in Discord",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "discord-api-types": "^0.33.5",
+    "discord-interactions": "^3.2.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^3.11.0",
+    "typescript": "^4.7.3",
+    "wrangler": "2.0.9"
+  }
+}

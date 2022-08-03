@@ -1,0 +1,23 @@
+name = "ditter"
+compatibility_date = "2022-06-11"
+
+main = "src/index.ts"
+workers_dev = true
+node_compat = true
+
+[vars]
+DISCORD_CLIENT_ID = "985306250596200478"
+DISCORD_PUBLIC_KEY = "4a02622bc5c79ced92c97a9b8f5d47ba52b3dc48ecd606c43f8a4cfd5813120a"
+
+[[kv_namespaces]]
+binding = "followers"
+id = "5793b3527ea24eb3a71b9ba8fcdfa652"
+preview_id = "148c7876941e435d99b0b4b038fe6312"
+
+[[kv_namespaces]]
+binding = "webhooks"
+id = "088af291b1fe46ffa1b00d8ed7276293"
+preview_id = "692ed0a7a47c41acb72b2a883ff6e7f5"
+
+# [secrets]
+# DISCORD_CLIENT_SECRET
